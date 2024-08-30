@@ -13,7 +13,7 @@ mandatoryAccounts:
       account. Note, the account name key does not need to match the AWS account
       name.
     email: pigeonhunterlogarchive@gmail.com
-    organizationalUnit: Security
+    organizationalUnit: Security  
     warm: false
   - name: Audit
     description: >-
