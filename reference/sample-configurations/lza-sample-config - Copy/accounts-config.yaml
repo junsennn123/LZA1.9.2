@@ -29,9 +29,9 @@ workloadAccounts:
   # The "name" value DOES NOT need to match the account name
   - name: SharedServices
     description: The SharedServices account
-    email: pigeonhuntermanagement@gmail.com
+    email: pigeonhuntersharedservices@gmail.com
     organizationalUnit: Infrastructure
   - name: Network
     description: The Network account
-    email: pigeonhunterman@gmail.com
+    email: pigeonhunternetwork@gmail.com
     organizationalUnit: Infrastructure
