@@ -1,15 +1,33 @@
 regions:
 - eu-west-1
+- global
 
 account-blocklist:
-- "999999999999" # production
+- "211125308792"
+- "919717595318"
+- "841162688055"
+- "423623844928"
+- "440388274549"
+- "024100176592"
 
 accounts:
-  "000000000000": # aws-nuke-example
+  244446109198:
     filters:
       IAMUser:
-      - "my-user"
+      - "iamadmin"
+      - "iamadminjs"
       IAMUserPolicyAttachment:
-      - "my-user -> AdministratorAccess"
+      - "iamadmin -> AdministratorAccess"
+      - "iamadminjs -> AdministratorAccess"
+      - "iamadminjs -> IAMUserChangePassword "
       IAMUserAccessKey:
-      - "my-user -> ABCDEFGHIJKLMNOPQRST"
+      - "iamadmin -> AKIATR2Q7TYHACGCUWV7"
+      - "iamadminjs -> AKIATR2Q7TYHEDWWRCMI"
+  "423623844928": {}
+  "841162688055": {}
+  "147997127509": {}
+  "474668387623": {}
+
+resource-types:
+  excludes:
+  - Route53HostedZone
