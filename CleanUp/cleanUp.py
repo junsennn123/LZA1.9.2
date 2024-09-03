@@ -109,5 +109,21 @@ for repo in ecr_list["repositories"]:
 #endregion
 """
 
+"""
+#region CloudWatch Log groups
+
+print("Deleting Log Groups ")
+logs_client = boto3.client("logs")
+
+log_groups = logs_client.describe_log_groups(limit=9999)
+
+for log_group in log_groups["logGroups"]:
+    print("Deleting Log Group: ", log_group["logGroupName"])
+    logs_client.delete_log_group(logGroupName = log_group["logGroupName"])
+
+
+#endregion
+"""
+
 
 
