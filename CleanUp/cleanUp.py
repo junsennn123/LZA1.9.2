@@ -5,6 +5,8 @@ session = boto3.Session()
 
 auditRoleArn = "arn:aws:iam::841162688055:role/OrganizationAccountAccessRole"
 logArchiveRoleArn = "arn:aws:iam::423623844928:role/OrganizationAccountAccessRole"
+sharedRoleArn = "arn:aws:iam::474668387623:role/OrganizationAccountAccessRole"
+networkRoleArn = "arn:aws:iam::147997127509:role/OrganizationAccountAccessRole"
 
 def deleteCloudformation(session):
     cfn_client = session.client('cloudformation')
@@ -205,5 +207,11 @@ assumeRole(auditRoleArn)
 deleteAll(session)
 
 assumeRole(logArchiveRoleArn)
+deleteAll(session)
+
+assumeRole(sharedRoleArn)
+deleteAll(session)
+
+assumeRole(networkRoleArn)
 deleteAll(session)
 
