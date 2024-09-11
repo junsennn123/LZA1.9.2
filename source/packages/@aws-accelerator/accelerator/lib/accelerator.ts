@@ -113,6 +113,7 @@ export const AcceleratorStackNames: Record<string, string> = {
   [AcceleratorStage.LOGGING]: `${stackPrefix}-LoggingStack`,
   [AcceleratorStage.BOOTSTRAP]: `${stackPrefix}-BootstrapStack`,
   [AcceleratorStage.ACCOUNTS]: `${stackPrefix}-AccountsStack`,
+  [AcceleratorStage.ADDBUCKET]: `${stackPrefix}-AddBucketStack`,
   [AcceleratorStage.DEPENDENCIES]: `${stackPrefix}-DependenciesStack`,
   [AcceleratorStage.SECURITY]: `${stackPrefix}-SecurityStack`,
   [AcceleratorStage.SECURITY_RESOURCES]: `${stackPrefix}-SecurityResourcesStack`,

@@ -32,6 +32,7 @@ import {
 } from '../utils/app-utils';
 import {
   createAccountsStack,
+  createAddBucketStack,
   createBootstrapStack,
   createCustomizationsStacks,
   createDiagnosticsPackStack,
@@ -103,6 +104,9 @@ function createManagementAccountStacks(
   //
   // ACCOUNTS Stack
   createAccountsStack(app, context, props, managementAccountId, globalRegion);
+  //
+  // ADD BUCKET Stack
+  createAddBucketStack(app, context, props, managementAccountId, globalRegion);
   //
   // IDENTITY CENTER Stack
   createIdentityCenterStack(app, context, props, managementAccountId, homeRegion);

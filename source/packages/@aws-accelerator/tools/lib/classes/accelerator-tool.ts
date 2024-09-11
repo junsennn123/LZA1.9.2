@@ -193,7 +193,7 @@ export class AcceleratorTool {
   }[] = [
     {
       stage: 'Deploy',
-      order: 7,
+      order: 8,
       actions: [
         { order: 11, name: 'Finalize', stackPrefix: '-FinalizeStack' },
         { order: 10, name: 'Customizations', stackPrefix: '-CustomizationsStack' },
@@ -210,22 +210,27 @@ export class AcceleratorTool {
     },
     {
       stage: 'SecurityAudit',
-      order: 6,
+      order: 7,
       actions: [{ order: 1, name: 'SecurityAudit', stackPrefix: '-SecurityAuditStack' }],
     },
     {
       stage: 'Organization',
-      order: 5,
+      order: 6,
       actions: [{ order: 1, name: 'Organizations', stackPrefix: '-OrganizationsStack' }],
     },
     {
       stage: 'Logging',
-      order: 4,
+      order: 5,
       actions: [
         { order: 3, name: 'Logging', stackPrefix: '-LoggingStack' },
         { order: 2, name: 'Key', stackPrefix: '-KeyStack' },
         { order: 1, name: 'Key', stackPrefix: '-DependenciesStack' },
       ],
+    },
+    {
+      stage: 'Add_Bucket',
+      order: 4,
+      actions: [{ order: 1, name: 'Accounts', stackPrefix: '-AddBucketStack' }],
     },
     {
       stage: 'Accounts',
