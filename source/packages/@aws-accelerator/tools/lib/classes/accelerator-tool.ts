@@ -230,7 +230,7 @@ export class AcceleratorTool {
     {
       stage: 'Add_Bucket',
       order: 4,
-      actions: [{ order: 1, name: 'Accounts', stackPrefix: '-AddBucketStack' }],
+      actions: [{ order: 1, name: 'AddBucket', stackPrefix: '-AddBucketStack' }],
     },
     {
       stage: 'Accounts',

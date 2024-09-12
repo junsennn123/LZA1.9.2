@@ -209,9 +209,10 @@ deleteAll(session)
 assumeRole(logArchiveRoleArn)
 deleteAll(session)
 
+"""
 assumeRole(sharedRoleArn)
 deleteAll(session)
 
 assumeRole(networkRoleArn)
 deleteAll(session)
-
+"""

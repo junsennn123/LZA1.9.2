@@ -33,6 +33,7 @@ import { AcceleratorStackNames } from '../lib/accelerator';
 import { AcceleratorStage } from '../lib/accelerator-stage';
 import { AcceleratorStack, AcceleratorStackProps } from '../lib/stacks/accelerator-stack';
 import { AccountsStack } from '../lib/stacks/accounts-stack';
+import { AddBucketStack } from '../lib/stacks/addbucket-stack';
 import { ApplicationsStack } from '../lib/stacks/applications-stack';
 import { BootstrapStack } from '../lib/stacks/bootstrap-stack';
 import { CustomStack, generateCustomStackMappings, isIncluded } from '../lib/stacks/custom-stack';
@@ -775,6 +776,21 @@ export class AcceleratorSynthStacks {
         new AccountsStack(
           this.app,
           `${AcceleratorStackNames[AcceleratorStage.ACCOUNTS]}-${this.managementAccountId}-${region}`,
+          {
+            env: {
+              account: this.managementAccountId,
+              region: region,
+            },
+            ...this.props,
+          },
+        ),
+      );
+
+      this.stacks.set(
+        `${this.managementAccount.name}-${region}`,
+        new AddBucketStack(
+          this.app,
+          `${AcceleratorStackNames[AcceleratorStage.ADDBUCKET]}-${this.managementAccountId}-${region}`,
           {
             env: {
               account: this.managementAccountId,
