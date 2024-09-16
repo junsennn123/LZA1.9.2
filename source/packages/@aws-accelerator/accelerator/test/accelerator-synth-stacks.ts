@@ -206,6 +206,9 @@ export class AcceleratorSynthStacks {
       case AcceleratorStage.SECURITY:
         this.synthSecurityStacks();
         break;
+      case AcceleratorStage.ADDBUCKET:
+        this.synthAddBucketStacks();
+        break;
       case AcceleratorStage.ACCOUNTS:
         this.synthAccountStacks();
         break;
@@ -765,6 +768,30 @@ export class AcceleratorSynthStacks {
       }
     }
   }
+  /**
+   * synth Add Bucket stacks
+   */
+  private synthAddBucketStacks() {
+    for (const region of this.props.globalConfig.enabledRegions) {
+      for (const account of [
+        ...this.props.accountsConfig.mandatoryAccounts,
+        ...this.props.accountsConfig.workloadAccounts,
+      ]) {
+        const accountId = this.props.accountsConfig.getAccountId(account.name);
+        this.stacks.set(
+          `${account.name}-${region}`,
+          new AddBucketStack(this.app, `${AcceleratorStackNames[AcceleratorStage.ADDBUCKET]}-${accountId}-${region}`, {
+            env: {
+              account: accountId,
+              region: region,
+            },
+            ...this.props,
+          }),
+        );
+      }
+    }
+  }
+
   /**
    * synth Account stacks
    */
