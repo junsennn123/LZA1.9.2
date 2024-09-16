@@ -21,20 +21,15 @@ export class AddBucketStack extends AcceleratorStack {
   constructor(scope: Construct, id: string, props: AcceleratorStackProps) {
     super(scope, id, props);
 
-    if (
-      cdk.Stack.of(this).region === props.globalConfig.homeRegion &&
-      cdk.Stack.of(this).account === props.accountsConfig.getManagementAccountId()
-    ) {
-      const addBucketTest = new Bucket(this, 'addBucketTest', {
-        s3BucketName: `${this.acceleratorResourceNames.bucketPrefixes.addBucket}-${cdk.Stack.of(this).account}-${
-          cdk.Stack.of(this).region
-        }`,
-        encryptionType: this.isS3CMKEnabled ? BucketEncryptionType.SSE_KMS : BucketEncryptionType.SSE_S3,
-      });
+    const addBucketTest = new Bucket(this, 'add-bucket', {
+      s3BucketName: `${this.acceleratorResourceNames.bucketPrefixes.addBucket}-${cdk.Stack.of(this).account}-${
+        cdk.Stack.of(this).region
+      }`,
+      encryptionType: this.isS3CMKEnabled ? BucketEncryptionType.SSE_KMS : BucketEncryptionType.SSE_S3,
+    });
 
-      //addBucketTest.getS3Bucket().grantRead();
+    //addBucketTest.getS3Bucket().grantRead();
 
-      addBucketTest.getKey();
-    }
+    addBucketTest.getKey();
   }
 }

@@ -1173,6 +1173,7 @@ export async function checkDiffStage(props: AcceleratorProps) {
     AcceleratorStage.SECURITY,
     AcceleratorStage.SECURITY_AUDIT,
     AcceleratorStage.SECURITY_RESOURCES,
+    AcceleratorStage.ADDBUCKET,
   ];
 
   // if diff command is run and no stage is set then run all stages

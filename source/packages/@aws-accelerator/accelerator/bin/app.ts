@@ -106,7 +106,7 @@ function createManagementAccountStacks(
   createAccountsStack(app, context, props, managementAccountId, globalRegion);
   //
   // ADD BUCKET Stack
-  createAddBucketStack(app, context, props, managementAccountId, globalRegion);
+  createAddBucketStack(app, context, props, managementAccountId, homeRegion);
   //
   // IDENTITY CENTER Stack
   createIdentityCenterStack(app, context, props, managementAccountId, homeRegion);
