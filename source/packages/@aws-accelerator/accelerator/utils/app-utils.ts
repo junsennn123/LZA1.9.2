@@ -486,6 +486,11 @@ export async function setAcceleratorStackProps(
       stage: AcceleratorStage.ACCOUNTS,
       account: accountsConfig.getManagementAccountId(),
       region: globalRegion,
+    }) ||
+    includeStage(context, {
+      stage: AcceleratorStage.ADDBUCKET,
+      account: accountsConfig.getManagementAccountId(),
+      region: globalRegion,
     })
   ) {
     const lookupTypeAndAccountIdMap = getLookupTypeAndAccountIdMap(
@@ -544,6 +549,7 @@ export function isBeforeBootstrapStage(command: string, stage?: string): boolean
   const preBootstrapStages = [
     AcceleratorStage.PREPARE,
     AcceleratorStage.ACCOUNTS,
+    AcceleratorStage.ADDBUCKET,
     AcceleratorStage.BOOTSTRAP,
   ] as string[];
   if (command === 'bootstrap') {

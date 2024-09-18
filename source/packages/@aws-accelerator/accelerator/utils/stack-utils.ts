@@ -1453,6 +1453,7 @@ function isBeforeBootstrapStage(stage?: string): boolean {
   const preBootstrapStages = [
     AcceleratorStage.PREPARE,
     AcceleratorStage.ACCOUNTS,
+    AcceleratorStage.ADDBUCKET,
     AcceleratorStage.BOOTSTRAP,
   ] as string[];
   if (!stage) {

@@ -659,6 +659,7 @@ export abstract class Accelerator {
       //
       // ACCOUNTS and FINALIZE stages
       case AcceleratorStage.ACCOUNTS:
+      case AcceleratorStage.ADDBUCKET:
       case AcceleratorStage.FINALIZE:
         logger.info(`Executing ${toolkitProps.stage} for ${managementAccountDetails.name} account.`);
         return AcceleratorToolkit.execute({

@@ -632,9 +632,13 @@ export class AcceleratorPipeline extends Construct {
     });
 
     this.pipeline.addStage({
-      stageName: 'Add_Bucket',
+      stageName: 'Add Bucket Stack Stage',
       actions: [
-        this.createToolkitStage({ actionName: 'Add_Bucket', command: 'deploy', stage: AcceleratorStage.ADDBUCKET }),
+        this.createToolkitStage({
+          actionName: 'Add Bucket Stack Test',
+          command: 'deploy',
+          stage: AcceleratorStage.ADDBUCKET,
+        }),
       ],
     });
 
