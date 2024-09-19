@@ -28,7 +28,7 @@ export class AddBucketStack extends AcceleratorStack {
       }`,
       encryptionType: this.isS3CMKEnabled ? BucketEncryptionType.SSE_KMS : BucketEncryptionType.SSE_S3,
       serverAccessLogsBucketName: serverAccessLogsBucketName,
-      autoDeleteObjects: true,
+      //autoDeleteObjects: true,
     });
 
     if (!serverAccessLogsBucketName) {
