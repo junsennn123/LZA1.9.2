@@ -27,7 +27,9 @@ export class AddBucketStack extends AcceleratorStack {
         cdk.Stack.of(this).region
       }`,
       encryptionType: this.isS3CMKEnabled ? BucketEncryptionType.SSE_KMS : BucketEncryptionType.SSE_S3,
-      serverAccessLogsBucketName: serverAccessLogsBucketName,
+      serverAccessLogsBucketName: `${this.acceleratorResourceNames.bucketPrefixes.addBucket}-${
+        cdk.Stack.of(this).account
+      }-${cdk.Stack.of(this).region}`,
       //autoDeleteObjects: true,
     });
 
