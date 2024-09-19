@@ -27,7 +27,8 @@ export class AddBucketStack extends AcceleratorStack {
         cdk.Stack.of(this).region
       }`,
       encryptionType: this.isS3CMKEnabled ? BucketEncryptionType.SSE_KMS : BucketEncryptionType.SSE_S3,
-      serverAccessLogsBucketName,
+      serverAccessLogsBucketName: serverAccessLogsBucketName,
+      autoDeleteObjects: true,
     });
 
     if (!serverAccessLogsBucketName) {
@@ -36,7 +37,7 @@ export class AddBucketStack extends AcceleratorStack {
         id: NagSuppressionRuleIds.S1,
         details: [
           {
-            path: `/${this.stackName}/FirewallConfigBucket/Resource/Resource`,
+            path: `/${this.stackName}/add-bucket/Resource/Resource`,
             reason: 'Due to configuration settings, server access logs have been disabled.',
           },
         ],
