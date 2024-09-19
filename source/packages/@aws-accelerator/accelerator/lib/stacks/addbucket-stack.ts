@@ -13,7 +13,7 @@
 
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { AcceleratorStack, AcceleratorStackProps } from './accelerator-stack';
+import { AcceleratorStack, AcceleratorStackProps, NagSuppressionRuleIds } from './accelerator-stack';
 
 import { Bucket, BucketEncryptionType } from '@aws-accelerator/constructs';
 
@@ -21,12 +21,27 @@ export class AddBucketStack extends AcceleratorStack {
   constructor(scope: Construct, id: string, props: AcceleratorStackProps) {
     super(scope, id, props);
 
+    const serverAccessLogsBucketName = this.getServerAccessLogsBucketName();
     const addBucketTest = new Bucket(this, 'add-bucket', {
       s3BucketName: `${this.acceleratorResourceNames.bucketPrefixes.addBucket}-${cdk.Stack.of(this).account}-${
         cdk.Stack.of(this).region
       }`,
       encryptionType: this.isS3CMKEnabled ? BucketEncryptionType.SSE_KMS : BucketEncryptionType.SSE_S3,
+      serverAccessLogsBucketName,
     });
+
+    if (!serverAccessLogsBucketName) {
+      // AwsSolutions-S1: The S3 Bucket has server access logs disabled
+      this.nagSuppressionInputs.push({
+        id: NagSuppressionRuleIds.S1,
+        details: [
+          {
+            path: `/${this.stackName}/FirewallConfigBucket/Resource/Resource`,
+            reason: 'Due to configuration settings, server access logs have been disabled.',
+          },
+        ],
+      });
+    }
 
     //addBucketTest.getS3Bucket().grantRead();
 
