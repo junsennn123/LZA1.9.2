@@ -13,7 +13,7 @@ mandatoryAccounts:
       account. Note, the account name key does not need to match the AWS account
       name.
     email: pigeonhunterlogarchive@gmail.com
-    organizationalUnit: Security
+    organizationalUnit: Security  
     warm: false
   - name: Audit
     description: >-
@@ -23,15 +23,4 @@ mandatoryAccounts:
     email: pigeonhunteraudit@gmail.com
     organizationalUnit: Security
     warm: false
-workloadAccounts:
-  # The "name" will be used to set the AWS Account name
-  # The "name" value does not currently support spaces
-  # The "name" value DOES NOT need to match the account name
-  - name: SharedServices
-    description: The SharedServices account
-    email: pigeonhuntersharedservices@gmail.com
-    organizationalUnit: Infrastructure
-  - name: Network
-    description: The Network account
-    email: pigeonhunternetwork@gmail.com
-    organizationalUnit: Infrastructure
+workloadAccounts: []
