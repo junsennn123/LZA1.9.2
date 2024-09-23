@@ -1,7 +1,7 @@
 customizations:
   cloudFormationStackSets: []
   cloudFormationStacks:
-    - name: Add-Another-Bucket-Stack
+    - name: !Sub 'AWSAccelerator-Add-Another-Bucket-Stack-${AWS::AccountId}-${AWS::Region}'
       description: Adds yet another bucket
       regions:
         - us-east-1
