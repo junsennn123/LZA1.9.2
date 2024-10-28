@@ -10,9 +10,9 @@ iam = boto3.client("iam")
 bucket_name = "data-perimeter-demo-bucket-tester"
 vpc_cidr = "115.66.0.0/16"
 subnet_cidr = "115.66.91.0/24"
-allowed_aws_account = "147997127509"  # Replace with the AWS account ID
+allowed_aws_account = "account-id"  # Replace with the AWS account ID
 role_name = "DataPerimeterRole"  # Replace with your role name
-organization_id = "o-vflmjsfa5x"  # Replace with your Organization ID, if applicable
+organization_id = "o-orgID"  # Replace with your Organization ID, if applicable
 
 def create_vpc():
     # Create VPC
