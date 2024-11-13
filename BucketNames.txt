@@ -1,0 +1,15 @@
+aws-accelerator-assets-244446109198-us-east-1
+aws-accelerator-assets-logs-244446109198-us-east-1
+
+aws-accelerator-s3-access-logs-244446109198-us-east-1
+
+aws-accelerator-config-244446109198-us-east-1
+aws-accelerator-pipeline-244446109198-us-east-1
+
+cdk-accel-assets-244446109198-us-east-1
+
+aws-accelerator-installer-244446109198-us-east-1
+
+aws-accelerator-s3-logs-244446109198-us-east-1
+
+lza-demo-tester-bucket
