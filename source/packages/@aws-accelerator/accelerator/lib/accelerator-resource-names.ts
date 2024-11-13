@@ -92,7 +92,6 @@ interface BucketPrefixes {
   assets: string;
   elbLogs: string;
   firewallConfig: string;
-  addBucket: string;
   costUsage: string;
   s3AccessLogs: string;
   auditManager: string;
@@ -173,7 +172,6 @@ export class AcceleratorResourceNames {
     assets: 'PLACE_HOLDER',
     elbLogs: 'PLACE_HOLDER',
     firewallConfig: 'PLACE_HOLDER',
-    addBucket: 'PLACE_HOLDER',
     costUsage: 'PLACE_HOLDER',
     s3AccessLogs: 'PLACE_HOLDER',
     auditManager: 'PLACE_HOLDER',
@@ -320,7 +318,6 @@ export class AcceleratorResourceNames {
     this.bucketPrefixes.assets = props.prefixes.bucketName + '-assets';
     this.bucketPrefixes.elbLogs = props.prefixes.bucketName + '-elb-access-logs';
     this.bucketPrefixes.firewallConfig = props.prefixes.bucketName + '-firewall-config';
-    this.bucketPrefixes.addBucket = props.prefixes.bucketName + '-add-bucket-test-name';
     this.bucketPrefixes.costUsage = props.prefixes.bucketName + '-cur';
     this.bucketPrefixes.s3AccessLogs = props.prefixes.bucketName + '-s3-access-logs';
     this.bucketPrefixes.auditManager = props.prefixes.bucketName + '-auditmgr';

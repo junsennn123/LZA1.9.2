@@ -31,7 +31,6 @@ export enum AcceleratorStage {
    * Accounts Stage - Handle all Organization and Accounts actions
    */
   ACCOUNTS = 'accounts',
-  ADDBUCKET = 'add-bucket',
   BOOTSTRAP = 'bootstrap',
   CUSTOMIZATIONS = 'customizations',
   DEPENDENCIES = 'dependencies',

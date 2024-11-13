@@ -66,13 +66,13 @@ export class IdentityCenterAssignments extends Construct {
   constructor(scope: Construct, id: string, props: IdentityCenterAssignmentsProps) {
     super(scope, id);
 
-    const _ASSIGNMENT_TYPE = 'Custom::IdentityCenterAssignments';
+    const IDENTITY_CENTER_ASSIGNMENT_TYPE = 'Custom::IdentityCenterAssignments';
     const partition = cdk.Stack.of(this).partition;
 
     //
     // Function definition for the custom resource
     //
-    const provider = cdk.CustomResourceProvider.getOrCreateProvider(this, _ASSIGNMENT_TYPE, {
+    const provider = cdk.CustomResourceProvider.getOrCreateProvider(this, IDENTITY_CENTER_ASSIGNMENT_TYPE, {
       codeDirectory: path.join(__dirname, 'build-identity-center-assignments/dist'),
       runtime: cdk.CustomResourceProviderRuntime.NODEJS_18_X,
       policyStatements: [
@@ -115,7 +115,7 @@ export class IdentityCenterAssignments extends Construct {
     });
 
     const resource = new cdk.CustomResource(this, 'Resource', {
-      resourceType: _ASSIGNMENT_TYPE,
+      resourceType: IDENTITY_CENTER_ASSIGNMENT_TYPE,
       serviceToken: provider.serviceToken,
       properties: {
         identityStoreId: props.identityStoreId,

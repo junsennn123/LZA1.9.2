@@ -507,7 +507,6 @@ function getAllLzaStackEnvironments(
     'Organizations',
     'Logging',
     'Key',
-    'AddBucket',
     'Accounts',
     'Prepare',
     'Bootstrap',

@@ -26,12 +26,14 @@ import { CloudFormationClient, DescribeStacksCommand } from '@aws-sdk/client-clo
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
 import { throttlingBackOff } from '@aws-accelerator/utils/lib/throttle';
 import { CloudFormationCustomResourceEvent } from '@aws-accelerator/utils/lib/common-types';
+import { getGlobalRegion } from '@aws-accelerator/utils/lib/common-functions';
 
 type scpTargetType = 'ou' | 'account';
 
 type serviceControlPolicyType = {
   name: string;
   targetType: scpTargetType;
+  strategy: string;
   targets: { name: string; id: string }[];
 };
 
@@ -122,21 +124,18 @@ export async function handler(event: CloudFormationCustomResourceEvent): Promise
   driftDetectionParameterName = event.ResourceProperties['driftDetectionParameterName'];
   driftDetectionMessageParameterName = event.ResourceProperties['driftDetectionMessageParameterName'];
   const skipScpValidation = event.ResourceProperties['skipScpValidation'];
-
   const solutionId = process.env['SOLUTION_ID'];
-
-  if (partition === 'aws-us-gov') {
-    organizationsClient = new AWS.Organizations({ region: 'us-gov-west-1' });
-  } else if (partition === 'aws-cn') {
-    organizationsClient = new AWS.Organizations({ region: 'cn-northwest-1' });
-  } else {
-    organizationsClient = new AWS.Organizations({ region: 'us-east-1', customUserAgent: solutionId });
-  }
-
   dynamodbClient = new DynamoDBClient({ customUserAgent: solutionId });
   documentClient = DynamoDBDocumentClient.from(dynamodbClient, translateConfig);
   serviceCatalogClient = new AWS.ServiceCatalog({ customUserAgent: solutionId });
   cloudformationClient = new CloudFormationClient({ customUserAgent: solutionId });
+  const globalRegion = getGlobalRegion(partition);
+  // Move to setOrganizationsClient method after refactoring to SDK v3
+  organizationsClient = new AWS.Organizations({
+    customUserAgent: solutionId,
+    region: globalRegion,
+  });
+
   ssmClient = new SSMClient({});
   paginationConfig = {
     client: documentClient,
@@ -351,7 +350,7 @@ async function validateServiceControlPolicyCount(
           response.Policies.forEach(item => existingAttachedScps.push(item.Name!));
         }
 
-        const totalScps = await getTotalScps(
+        const [totalScps, allowListStrategyAndFullAWSAccessPolicyFlag] = await getTotalScps(
           target.name,
           scpItem.targetType,
           existingAttachedScps,
@@ -359,12 +358,20 @@ async function validateServiceControlPolicyCount(
           policyTagKey,
         );
 
-        const totalScpCount = totalScps.length;
+        let totalScpCount = totalScps.length;
 
         console.log(`Scp count validation started for target ${target.name}, target type is ${scpItem.targetType}`);
         console.log(`${target.name} ${scpItem.targetType} existing attached scps are - ${existingAttachedScps}`);
         console.log(`${target.name} ${scpItem.targetType} updated list of scps for attachment - ${totalScps}`);
         console.log(`${target.name} ${scpItem.targetType} total scp count is ${totalScpCount}`);
+
+        if (allowListStrategyAndFullAWSAccessPolicyFlag) {
+          console.log(
+            `Since the provided SCPs for ${scpItem.targetType} "${target.name}" has ${scpItem.strategy} strategy, the totalSCP count will be reduced by 1 because for ${scpItem.strategy} strategy 'FullAWSAccess' policy is detached`,
+          );
+          totalScpCount = totalScpCount - 1;
+          console.log(`${target.name} ${scpItem.targetType} new total scp count is ${totalScpCount}`);
+        }
 
         if (totalScpCount > 5) {
           console.log(
@@ -399,9 +406,14 @@ async function getTotalScps(
   existingScps: string[],
   serviceControlPolicies: serviceControlPolicyType[],
   policyTagKey: string,
-): Promise<string[]> {
-  const totalScps: string[] = getNewScps(targetName, targetType, existingScps, serviceControlPolicies);
-
+): Promise<[string[], boolean]> {
+  const [totalScps, allowListStrategyFlag]: [string[], boolean] = getNewScps(
+    targetName,
+    targetType,
+    existingScps,
+    serviceControlPolicies,
+  );
+  let allowListStrategyAndFullAWSAccessPolicyFlag = false;
   for (const existingScp of existingScps) {
     // check for control tower drift
     let nextToken: string | undefined = undefined;
@@ -422,6 +434,10 @@ async function getTotalScps(
 
           // When attached policy is AWS managed, add to list of policies
           if (isAwsManaged) {
+            // If the provided SCPs have 'allow-list' strategy and FullAWSAccess Policy is already attached to the TargetType then set allowListStrategyAndFullAWSAccessPolicyFlag to true
+            // This flag will be used to reduce the Total SCP count by 1 because when allow-list strategy is defined for a particular TargetType then FullAWSAccessPolicy is detached
+            if (allowListStrategyFlag && policy.Id === 'p-FullAWSAccess')
+              allowListStrategyAndFullAWSAccessPolicyFlag = true;
             totalScps.push(existingScp);
             break;
           }
@@ -449,7 +465,7 @@ async function getTotalScps(
     } while (nextToken);
   }
 
-  return totalScps;
+  return [totalScps, allowListStrategyAndFullAWSAccessPolicyFlag];
 }
 
 /**
@@ -492,17 +508,20 @@ function getNewScps(
   targetType: scpTargetType,
   existingScps: string[],
   serviceControlPolicies: serviceControlPolicyType[],
-): string[] {
+): [string[], boolean] {
   const configScps: string[] = [];
+  let allowListStrategyFlag = true;
 
   for (const scpItem of serviceControlPolicies) {
     for (const target of scpItem.targets ?? []) {
       if (scpItem.targetType === targetType && target.name === targetName) {
+        if (scpItem.strategy === 'deny-list') allowListStrategyFlag = false;
         configScps.push(scpItem.name);
       }
     }
   }
-  return configScps.filter(x => existingScps.indexOf(x) === -1);
+
+  return [configScps.filter(x => existingScps.indexOf(x) === -1), allowListStrategyFlag];
 }
 
 async function validateControlTower() {
@@ -794,7 +813,7 @@ async function validateAccountsInOu(
             );
           }
         } else {
-          /*errors.push(`Found account with id ${child.Id} in OU ${ou.acceleratorKey} that is not in the configuration.`);*/
+          errors.push(`Found account with id ${child.Id} in OU ${ou.acceleratorKey} that is not in the configuration.`);
         }
       }
       nextToken = page.NextToken;
@@ -868,7 +887,7 @@ async function isStackInRollback(stackName: string): Promise<boolean> {
 
 async function validateAllOuInConfig(): Promise<string[]> {
   const errors: string[] = [];
-  /*for (const ouKeys of awsOuKeys) {
+  for (const ouKeys of awsOuKeys) {
     if (configAllOuKeys.find(item => item.acceleratorKey === ouKeys.acceleratorKey)) {
       continue;
     } else {
@@ -876,13 +895,13 @@ async function validateAllOuInConfig(): Promise<string[]> {
         `Organizational Unit '${ouKeys.acceleratorKey}' with id of '${ouKeys.awsKey}' was not found in the organization configuration.`,
       );
     }
-  }*/
+  }
   return errors;
 }
 
 async function validateAllAwsAccountsInConfig(): Promise<string[]> {
   const errors: string[] = [];
-  /*for (const account of organizationAccounts) {
+  for (const account of organizationAccounts) {
     if (workloadAccounts.find(item => item['acceleratorKey'] === account.Email!)) {
       continue;
     }
@@ -896,7 +915,7 @@ async function validateAllAwsAccountsInConfig(): Promise<string[]> {
         `Account with Id ${account.Id} and email ${account.Email} is not in the accounts configuration and is not a member of an ignored OU.`,
       );
     }
-  }*/
+  }
   return errors;
 }
 

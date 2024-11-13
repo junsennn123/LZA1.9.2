@@ -33,7 +33,6 @@ import { AcceleratorStackNames } from '../lib/accelerator';
 import { AcceleratorStage } from '../lib/accelerator-stage';
 import { AcceleratorStack, AcceleratorStackProps } from '../lib/stacks/accelerator-stack';
 import { AccountsStack } from '../lib/stacks/accounts-stack';
-import { AddBucketStack } from '../lib/stacks/addbucket-stack';
 import { ApplicationsStack } from '../lib/stacks/applications-stack';
 import { BootstrapStack } from '../lib/stacks/bootstrap-stack';
 import { CustomStack, generateCustomStackMappings, isIncluded } from '../lib/stacks/custom-stack';
@@ -205,9 +204,6 @@ export class AcceleratorSynthStacks {
         break;
       case AcceleratorStage.SECURITY:
         this.synthSecurityStacks();
-        break;
-      case AcceleratorStage.ADDBUCKET:
-        this.synthAddBucketStacks();
         break;
       case AcceleratorStage.ACCOUNTS:
         this.synthAccountStacks();
@@ -769,30 +765,6 @@ export class AcceleratorSynthStacks {
     }
   }
   /**
-   * synth Add Bucket stacks
-   */
-  private synthAddBucketStacks() {
-    for (const region of this.props.globalConfig.enabledRegions) {
-      for (const account of [
-        ...this.props.accountsConfig.mandatoryAccounts,
-        ...this.props.accountsConfig.workloadAccounts,
-      ]) {
-        const accountId = this.props.accountsConfig.getAccountId(account.name);
-        this.stacks.set(
-          `${account.name}-${region}`,
-          new AddBucketStack(this.app, `${AcceleratorStackNames[AcceleratorStage.ADDBUCKET]}-${accountId}-${region}`, {
-            env: {
-              account: accountId,
-              region: region,
-            },
-            ...this.props,
-          }),
-        );
-      }
-    }
-  }
-
-  /**
    * synth Account stacks
    */
 
@@ -803,21 +775,6 @@ export class AcceleratorSynthStacks {
         new AccountsStack(
           this.app,
           `${AcceleratorStackNames[AcceleratorStage.ACCOUNTS]}-${this.managementAccountId}-${region}`,
-          {
-            env: {
-              account: this.managementAccountId,
-              region: region,
-            },
-            ...this.props,
-          },
-        ),
-      );
-
-      this.stacks.set(
-        `${this.managementAccount.name}-${region}`,
-        new AddBucketStack(
-          this.app,
-          `${AcceleratorStackNames[AcceleratorStage.ADDBUCKET]}-${this.managementAccountId}-${region}`,
           {
             env: {
               account: this.managementAccountId,

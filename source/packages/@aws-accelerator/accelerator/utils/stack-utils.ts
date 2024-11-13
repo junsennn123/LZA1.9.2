@@ -54,7 +54,6 @@ import { AssumeRoleCommand, GetCallerIdentityCommand, STSClient } from '@aws-sdk
 import { setRetryStrategy } from '@aws-accelerator/utils/lib/common-functions';
 import { throttlingBackOff } from '@aws-accelerator/utils/lib/throttle';
 import { ControlTowerClient, ListLandingZonesCommand } from '@aws-sdk/client-controltower';
-import { AddBucketStack } from '../lib/stacks/addbucket-stack';
 
 const logger = createLogger(['stack-utils']);
 /**
@@ -513,52 +512,6 @@ export function createAccountsStack(
     addAcceleratorTags(accountsStack, context.partition, props.globalConfig, props.prefixes.accelerator);
     cdk.Aspects.of(accountsStack).add(new AwsSolutionsChecks());
     cdk.Aspects.of(accountsStack).add(new PermissionsBoundaryAspect(managementAccountId, context.partition));
-    new AcceleratorAspects(app, context.partition, context.useExistingRoles ?? false);
-  }
-}
-
-/**
- * Create Add Bucket Stack
- * @param rootApp
- * @param context
- * @param props
- * @param managementAccountId
- * @param globalRegion
- */
-export function createAddBucketStack(
-  rootApp: cdk.App,
-  context: AcceleratorContext,
-  props: AcceleratorStackProps,
-  managementAccountId: string,
-  globalRegion: string,
-) {
-  if (
-    includeStage(context, {
-      stage: AcceleratorStage.ADDBUCKET,
-      account: managementAccountId,
-      region: globalRegion,
-    })
-  ) {
-    checkRootApp(rootApp);
-    const addBucketStackName = `${
-      AcceleratorStackNames[AcceleratorStage.ADDBUCKET]
-    }-${managementAccountId}-${globalRegion}`;
-    const app = new cdk.App({
-      outdir: `cdk.out/${addBucketStackName}`,
-    });
-    const addBucketStack = new AddBucketStack(app, `${addBucketStackName}`, {
-      env: {
-        account: managementAccountId,
-        region: globalRegion,
-      },
-      description: `(SO0199-accounts) Landing Zone Accelerator on AWS. Version ${version}.`,
-      synthesizer: getStackSynthesizer(props, managementAccountId, globalRegion, context.stage),
-      terminationProtection: props.globalConfig.terminationProtection ?? true,
-      ...props,
-    });
-    addAcceleratorTags(addBucketStack, context.partition, props.globalConfig, props.prefixes.accelerator);
-    cdk.Aspects.of(addBucketStack).add(new AwsSolutionsChecks());
-    cdk.Aspects.of(addBucketStack).add(new PermissionsBoundaryAspect(managementAccountId, context.partition));
     new AcceleratorAspects(app, context.partition, context.useExistingRoles ?? false);
   }
 }
@@ -1453,7 +1406,6 @@ function isBeforeBootstrapStage(stage?: string): boolean {
   const preBootstrapStages = [
     AcceleratorStage.PREPARE,
     AcceleratorStage.ACCOUNTS,
-    AcceleratorStage.ADDBUCKET,
     AcceleratorStage.BOOTSTRAP,
   ] as string[];
   if (!stage) {
