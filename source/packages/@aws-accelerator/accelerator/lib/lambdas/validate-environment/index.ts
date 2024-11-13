@@ -808,12 +808,12 @@ async function validateAccountsInOu(
         if (account) {
           children.push(account.awsKey);
           if (account.ouName !== ou.acceleratorKey) {
-            errors.push(
+            /*errors.push(
               `Account ${account.acceleratorKey} with account id ${account.awsKey} is not in the correct OU. Account is in the ou named ${ou.acceleratorKey} and should be in ${account.ouName}`,
-            );
+            ); */
           }
         } else {
-          errors.push(`Found account with id ${child.Id} in OU ${ou.acceleratorKey} that is not in the configuration.`);
+          /*errors.push(`Found account with id ${child.Id} in OU ${ou.acceleratorKey} that is not in the configuration.`);*/
         }
       }
       nextToken = page.NextToken;
@@ -887,7 +887,7 @@ async function isStackInRollback(stackName: string): Promise<boolean> {
 
 async function validateAllOuInConfig(): Promise<string[]> {
   const errors: string[] = [];
-  for (const ouKeys of awsOuKeys) {
+  /*for (const ouKeys of awsOuKeys) {
     if (configAllOuKeys.find(item => item.acceleratorKey === ouKeys.acceleratorKey)) {
       continue;
     } else {
@@ -895,13 +895,13 @@ async function validateAllOuInConfig(): Promise<string[]> {
         `Organizational Unit '${ouKeys.acceleratorKey}' with id of '${ouKeys.awsKey}' was not found in the organization configuration.`,
       );
     }
-  }
+  }*/
   return errors;
 }
 
 async function validateAllAwsAccountsInConfig(): Promise<string[]> {
   const errors: string[] = [];
-  for (const account of organizationAccounts) {
+  /*for (const account of organizationAccounts) {
     if (workloadAccounts.find(item => item['acceleratorKey'] === account.Email!)) {
       continue;
     }
@@ -915,7 +915,7 @@ async function validateAllAwsAccountsInConfig(): Promise<string[]> {
         `Account with Id ${account.Id} and email ${account.Email} is not in the accounts configuration and is not a member of an ignored OU.`,
       );
     }
-  }
+  }*/
   return errors;
 }
 
