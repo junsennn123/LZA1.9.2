@@ -13,3 +13,19 @@ aws-accelerator-installer-244446109198-us-east-1
 aws-accelerator-s3-logs-244446109198-us-east-1
 
 lza-demo-tester-bucket
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::aws-accelerator-s3-logs-244446109198-us-east-1/*",
+                "arn:aws:s3:::aws-accelerator-s3-logs-244446109198-us-east-1"
+            ]
+        }
+    ]
+}
